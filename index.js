@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 
 // Launch the browser and open a new blank page
-const browser = await puppeteer.launch();
+const browser = await puppeteer.launch({ headless: false });
 
 const page = await browser.newPage();
 
@@ -20,31 +20,30 @@ const elements = await page.$$eval('.sc-dadxi2-0.fCSoyD', el => el.map(e => ({
     articles: e.innerText.match(/(\d+)\sArticles/) ? parseInt(e.innerText.match(/(\d+)\sArticles/)) : 0
 
   })));
-  
+
+
 
   for (let element of elements) {
 
-
+    // await randomWait();
     // criteria i used to get only boutiques that have more than 200 articles 
 
     if (element.articles > 200) {
 
       let object={}
-
-
       await page.goto(element.url); 
 
       object.url=await page.url()
       object.articles=element.articles
-
-
+      object.name=element.name
+      console.log("element",element)
       await page.waitForSelector('.sc-1cr3r7-12.jZNltR');
       await page.waitForSelector('.sc-uoqswv-0.sc-uoqswv-1.sc-uoqswv-2.efaJYW.uyOfO.sc-1cr3r7-14.dSWPUN');
       await page.click('.sc-uoqswv-0.sc-uoqswv-1.sc-uoqswv-2.efaJYW.uyOfO.sc-1cr3r7-14.dSWPUN');
 
       const jsonContent = await page.$eval('script#__NEXT_DATA__', (el) => el.textContent);
 
-                // Parse the JSON content
+        // Parse the JSON content
         const data = JSON.parse(jsonContent);
 
         // Extract the phone number
@@ -72,6 +71,14 @@ const elements = await page.$$eval('.sc-dadxi2-0.fCSoyD', el => el.map(e => ({
   console.log("informations",informations)
   
   await browser.close();
+
+
+
+  function randomWait(min = 1000, max = 6000) {
+    const ms = Math.floor(Math.random() * (max - min + 1)) + min;
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
 
 
 //   console.log(elements);
