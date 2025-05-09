@@ -40,7 +40,7 @@ for (let i=1;i<=totalPages;i++){
       for (let element of elements) {
         await randomWait(300, 600);
         // criteria i used to get only boutiques that have more than 200 articles 
-        if (element.articles > 1000) {
+        if (element.articles > 120) {
 
           let object={}
           await page.goto(element.url); 
